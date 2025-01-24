@@ -5,4 +5,7 @@ public class ConnectJDBC {
 
         return new Users();
     }
+
+    public static boolean register(String user, String password) {
+    }
 }
