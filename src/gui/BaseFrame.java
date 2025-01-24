@@ -2,7 +2,7 @@ package gui;
 import databaseObjects.Users;
 import javax.swing.*;
 
-public class BaseFrame extends JFrame{
+public abstract class BaseFrame extends JFrame{
     protected Users user;
 
     public BaseFrame(String title, Users user){
