@@ -5,5 +5,6 @@ public class Users {
     }
 
     public String getCurrentBalance() {
+        return null;
     }
 }
