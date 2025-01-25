@@ -39,7 +39,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
     }
 
     public void addCurrentBalanceAndAmount() {
-        balanceLabel = new JLabel("Balance: $" + user.getCurrentBalance());
+        balanceLabel = new JLabel("Balance: Rs" + user.getCurrentBalance());
         balanceLabel.setBounds(0, 10, getWidth() - 20, 20);
         balanceLabel.setFont(new Font("Dialog", Font.BOLD, 16));
         balanceLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -178,8 +178,8 @@ public class BankingAppDialog extends JDialog implements ActionListener {
             enterUserField.setText("");
         }
 
-        balanceLabel.setText("Balance: $" + user.getCurrentBalance());
-        bankingAppGui.getCurrentBalanceField().setText("$" + user.getCurrentBalance());
+        balanceLabel.setText("Balance: Rs" + user.getCurrentBalance());
+        bankingAppGui.getCurrentBalanceField().setText("Rs" + user.getCurrentBalance());
     }
 
     private void handleTransfer(Users user, String transferredUser, float amount) throws ClassNotFoundException {
