@@ -1,15 +1,35 @@
 package databaseObjects;
 
+import java.math.BigDecimal;
+import java.sql.*;
+
 public class Transactions {
+
+    private final int userId;
+    private final String transactionType;
+    private final BigDecimal transactionAmount;
+    private final Date transactionDate;
+
+    public Transactions(int userId, String transactionType, BigDecimal transactionAmount, Date transactionDate){
+        this.userId = userId;
+        this.transactionType = transactionType;
+        this.transactionAmount = transactionAmount;
+        this.transactionDate = transactionDate;
+    }
+
+    public int getUserID() {
+        return userId;
+    }
+
     public String getTransactionType() {
-        return null;
+        return transactionType;
     }
 
-    public char[] getTransactionAmount() {
-        return new char[2];
+    public BigDecimal getTransactionAmount() {
+        return transactionAmount;
     }
 
-    public char[] getTransactionDate() {
-        return new char[2];
+    public Date getTransactionDate() {
+        return transactionDate;
     }
 }

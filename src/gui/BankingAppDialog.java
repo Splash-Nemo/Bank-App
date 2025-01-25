@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.*;
 
 public class BankingAppDialog extends JDialog implements ActionListener {
@@ -122,16 +123,24 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         float amountVal = Float.parseFloat(enterAmountField.getText());
 
         if (buttonPressed.equalsIgnoreCase("Deposit")) {
-            handleTransactions(buttonPressed, amountVal);
+            try {
+                handleTransactions(buttonPressed, amountVal);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         } else {
-            int result = user.getCurrentBalance().compareTo(String.valueOf(BigDecimal.valueOf(amountVal)));
+            int result = user.getCurrentBalance().compareTo(BigDecimal.valueOf(amountVal));
             if (result < 0) {
                 JOptionPane.showMessageDialog(this, "Error: Input value is more than current balance");
                 return;
             }
 
             if (buttonPressed.equalsIgnoreCase("Withdraw")) {
-                handleTransactions(buttonPressed, amountVal);
+                try {
+                    handleTransactions(buttonPressed, amountVal);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             } else {
                 String transferredUser = enterUserField.getText();
                 handleTransfer(user, transferredUser, amountVal);
@@ -139,7 +148,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         }
     }
 
-    private void handleTransactions(String transactionType, float amountVal){
+    private void handleTransactions(String transactionType, float amountVal) throws SQLException {
         Transactions transaction;
 
         if(transactionType.equalsIgnoreCase("Deposit")){

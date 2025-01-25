@@ -1,10 +1,37 @@
 package databaseObjects;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Users {
-    public String getUsername() {
+    private final int id;
+    private final String username, password;
+    private BigDecimal currentBalance;
+
+    public Users(int id, String username, String password, BigDecimal currentBalance){
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.currentBalance = currentBalance;
     }
 
-    public String getCurrentBalance() {
-        return null;
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public BigDecimal getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(BigDecimal newBalance){
+        currentBalance = newBalance.setScale(2, RoundingMode.FLOOR);
     }
 }
