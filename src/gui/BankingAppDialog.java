@@ -79,7 +79,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         add(enterUserField);
     }
 
-    public void addPastTransactionComponents() {
+    public void addPastTransactionComponents() throws ClassNotFoundException {
         pastTransactionPanel = new JPanel();
         pastTransactionPanel.setLayout(new BoxLayout(pastTransactionPanel, BoxLayout.Y_AXIS));
 
@@ -125,7 +125,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         if (buttonPressed.equalsIgnoreCase("Deposit")) {
             try {
                 handleTransactions(buttonPressed, amountVal);
-            } catch (SQLException ex) {
+            } catch (SQLException | ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
         } else {
@@ -138,17 +138,21 @@ public class BankingAppDialog extends JDialog implements ActionListener {
             if (buttonPressed.equalsIgnoreCase("Withdraw")) {
                 try {
                     handleTransactions(buttonPressed, amountVal);
-                } catch (SQLException ex) {
+                } catch (SQLException | ClassNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
             } else {
                 String transferredUser = enterUserField.getText();
-                handleTransfer(user, transferredUser, amountVal);
+                try {
+                    handleTransfer(user, transferredUser, amountVal);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }
 
-    private void handleTransactions(String transactionType, float amountVal) throws SQLException {
+    private void handleTransactions(String transactionType, float amountVal) throws SQLException, ClassNotFoundException {
         Transactions transaction;
 
         if(transactionType.equalsIgnoreCase("Deposit")){
@@ -178,7 +182,7 @@ public class BankingAppDialog extends JDialog implements ActionListener {
         bankingAppGui.getCurrentBalanceField().setText("$" + user.getCurrentBalance());
     }
 
-    private void handleTransfer(Users user, String transferredUser, float amount){
+    private void handleTransfer(Users user, String transferredUser, float amount) throws ClassNotFoundException {
         if(ConnectJDBC.transfer(user, transferredUser, amount)){
             JOptionPane.showMessageDialog(this, "Transfer Success!");
             resetFieldsAndUpdateCurrentBalance();

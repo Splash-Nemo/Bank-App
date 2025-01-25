@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class RegisterGUI extends BaseFrame {
 
@@ -68,15 +69,21 @@ public class RegisterGUI extends BaseFrame {
                 String repassword= String.valueOf(rePasswordField.getPassword());
 
                 if(validUserInput(user, password, repassword)){
-                    if(ConnectJDBC.register(user, password)){
-                        RegisterGUI.this.dispose();
+                    try {
+                        if(ConnectJDBC.register(user, password)){
+                            RegisterGUI.this.dispose();
 
-                        LoginGui loginGui= new LoginGui();
-                        loginGui.setVisible(true);
+                            LoginGui loginGui= new LoginGui();
+                            loginGui.setVisible(true);
 
-                        JOptionPane.showMessageDialog(loginGui, "Registered Successfully");
-                    }else {
-                        JOptionPane.showMessageDialog(RegisterGUI.this, "Username already taken");
+                            JOptionPane.showMessageDialog(loginGui, "Registered Successfully");
+                        }else {
+                            JOptionPane.showMessageDialog(RegisterGUI.this, "Username already taken");
+                        }
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ClassNotFoundException ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
             }

@@ -6,6 +6,7 @@ import databaseObjects.ConnectJDBC;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class LoginGui extends BaseFrame{
     public LoginGui(){
@@ -46,7 +47,7 @@ public class LoginGui extends BaseFrame{
 
         add(passwordField);
 
-        JButton loginButton= new JButton();
+        JButton loginButton= new JButton("LOGIN");
         loginButton.setBounds(20,460,getWidth()-50,40);
         loginButton.setFont(new Font("Dialog", Font.BOLD, 20));
         loginButton.addActionListener(new ActionListener() {
@@ -54,7 +55,12 @@ public class LoginGui extends BaseFrame{
             public void actionPerformed(ActionEvent e) {
                 String userName= userNameField.getText();
                 String password= String.valueOf(passwordField.getPassword());
-                Users user= ConnectJDBC.validateLogin(userName, password);
+                Users user= null;
+                try {
+                    user = ConnectJDBC.validateLogin(userName, password);
+                } catch (SQLException | ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 if(user!=null){
                     LoginGui.this.dispose();
@@ -82,5 +88,7 @@ public class LoginGui extends BaseFrame{
                 new RegisterGUI().setVisible(true);
             }
         });
+
+        add(registerLabel);
     }
 }

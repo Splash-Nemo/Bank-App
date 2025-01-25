@@ -6,11 +6,12 @@ import java.math.BigDecimal;
 import java.sql.*;
 
 public class ConnectJDBC {
-    private static final String dburl = "jdbc:mysql://127.0.0.1:3306/bank-server";
+    private static final String dburl = "jdbc:mysql://localhost:3306/bank-server?useSSL=false&allowPublicKeyRetrieval=true";
     private static final String dbusername= "root";
     private static final String dbpassword= "aditya@1234";
 
-    public static Users validateLogin(String userName, String password) throws SQLException {
+    public static Users validateLogin(String userName, String password) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection= DriverManager.getConnection(dburl, dbusername, dbpassword);
 
         PreparedStatement preparedStatement= connection.prepareStatement("SELECT * FROM USERS WHERE USERNAME= ? AND PASSWORD= ?");
@@ -21,8 +22,8 @@ public class ConnectJDBC {
         ResultSet resultSet= preparedStatement.executeQuery();
 
         if(resultSet.next()){
-            int userID= resultSet.getInt("id");
-            BigDecimal currentBalance= resultSet.getBigDecimal("current_balance");
+            int userID= resultSet.getInt("ID");
+            BigDecimal currentBalance= resultSet.getBigDecimal("CURRENT_BALANCE");
 
             return new Users(userID, userName, password, currentBalance);
         }
@@ -30,8 +31,9 @@ public class ConnectJDBC {
         return null;
     }
 
-    public static boolean register(String userName, String password) throws SQLException {
+    public static boolean register(String userName, String password) throws SQLException, ClassNotFoundException {
         if(!checkUser(userName)){
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection= DriverManager.getConnection(dburl, dbusername, dbpassword);
             
             PreparedStatement preparedStatement= connection.prepareStatement("INSERT INTO USERS(USERNAME, PASSWORD, CURRENT_BALANCE) VALUES(?,?,?)");
@@ -46,10 +48,11 @@ public class ConnectJDBC {
         return false;
     }
 
-    private static boolean checkUser(String userName) throws SQLException {
+    private static boolean checkUser(String userName) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection= DriverManager.getConnection(dburl, dbusername, dbpassword);
 
-        PreparedStatement preparedStatement= connection.prepareStatement("SELECT * FROM USERS WHERE USERNAME");
+        PreparedStatement preparedStatement= connection.prepareStatement("SELECT * FROM USERS WHERE USERNAME= ?");
         preparedStatement.setString(1,userName);
 
         ResultSet resultSet= preparedStatement.executeQuery();
@@ -63,9 +66,10 @@ public class ConnectJDBC {
 
     public static boolean addTransactionToDatabase(Transactions transaction) throws SQLException {
         try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection= DriverManager.getConnection(dburl, dbusername, dbpassword);
 
-            PreparedStatement insertTransaction= connection.prepareStatement("INSERT TRANSACTIONS(USER_ID,TRANSACTION_TYPE, TRANSACTION_AMOUNT, TRANSACTION_DATE VALUES(?,?,?, NOW())");
+            PreparedStatement insertTransaction = connection.prepareStatement("INSERT INTO TRANSACTIONS (USER_ID, TRANSACTION_TYPE, TRANSACTION_AMOUNT, TRANSACTION_DATE) VALUES (?, ?, ?, NOW())");
 
             insertTransaction.setInt(1, transaction.getUserID());
             insertTransaction.setString(2, transaction.getTransactionType());
@@ -76,13 +80,16 @@ public class ConnectJDBC {
             return true;
         } catch (SQLException e){
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
         return false;
     }
 
-    public static boolean updateCurrentBalance(Users user) {
+    public static boolean updateCurrentBalance(Users user) throws ClassNotFoundException{
         try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(dburl, dbusername, dbpassword);
 
             PreparedStatement updateBalance = connection.prepareStatement(
@@ -102,8 +109,9 @@ public class ConnectJDBC {
         return false;
     }
 
-    public static boolean transfer(Users user, String transferredUsername, float transferAmount){
+    public static boolean transfer(Users user, String transferredUsername, float transferAmount) throws ClassNotFoundException{
         try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(dburl, dbusername, dbpassword);
 
             PreparedStatement queryUser = connection.prepareStatement(
@@ -153,8 +161,9 @@ public class ConnectJDBC {
         return false;
     }
 
-    public static ArrayList<Transactions> getPastTransactions(Users user) {
+    public static ArrayList<Transactions> getPastTransactions(Users user) throws ClassNotFoundException {
         ArrayList<Transactions> pastTransactions = new ArrayList<>();
+        Class.forName("com.mysql.cj.jdbc.Driver");
         try{
             Connection connection = DriverManager.getConnection(dburl, dbusername, dbpassword);
 
