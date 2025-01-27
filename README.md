@@ -4,6 +4,8 @@ A simple bank application built with Java, Swing, MySQL, and JDBC. It allows use
 
 Technologies Used: Java, Swing, JDBC, MySQL
 
+You can view the application demo here: [Application Demo](https://drive.google.com/file/d/1tf9Cr4iUeEWGJBcccu7muUlIC-6r-A3C/view?usp=sharing)
+
 ## Features
 
 1. User Registration
